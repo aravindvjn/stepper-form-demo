@@ -1,37 +1,243 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# @aravindvjn/stepper-form
 
-## Getting Started
+A CLI to generate a fully reusable, config-driven stepper form system for React / Next.js apps.
 
-First, run the development server:
+Build complex multi-step forms faster using React Hook Form, Zod, Tailwind, and CVA — without writing boilerplate.
+
+---
+
+## ✨ Features
+
+- Config-driven stepper form
+- Separate reusable field components
+- React Hook Form + Zod ready
+- Tailwind + tailwind-merge + CVA variants
+- Searchable select & multi-select
+- Country / State / City fields
+- Fully extensible architecture
+- CLI-based setup (similar to shadcn)
+
+---
+
+## 🚀 Usage
+
+Run directly with npx:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx @aravindvjn/stepper-form init
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+With demo:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx @aravindvjn/stepper-form init --demo
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Custom path:
 
-## Learn More
+```bash
+npx @aravindvjn/stepper-form init --path components/custom-stepper
+```
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 What it generates
 
-## Deploy on Vercel
+Automatically detects your project structure:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Project Structure | Output Folder |
+|---|---|
+| `src/components` exists | `src/components/stepper-form` |
+| `components` exists | `components/stepper-form` |
+| none | `src/components/stepper-form` |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# stepper-form-demo
+---
+
+## 📦 Install dependencies
+
+After running the CLI:
+
+```bash
+npm install react-hook-form zod @hookform/resolvers class-variance-authority clsx tailwind-merge lucide-react @countrystatecity/countries-browser 
+```
+
+(or pnpm / yarn will be suggested automatically)
+
+---
+
+## 🧑‍💻 Usage Example
+
+### 1. Import
+
+```ts
+import { StepperForm } from "@/components/stepper-form";
+```
+
+### 2. Create schema
+
+```ts
+import { z } from "zod";
+
+export const schema = z.object({
+  full_name: z.string().min(1, "Required"),
+  email: z.string().email(),
+  skills: z.array(z.string()).min(1),
+});
+```
+a
+### 3. Create steps config
+
+```ts
+const steps = [
+  {
+    step: 1,
+    title: "Basic Details",
+    fields: [
+      {
+        name: "full_name",
+        label: "Full Name",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "email",
+        label: "Email",
+        type: "email",
+        required: true,
+      },
+    ],
+  },
+  {
+    step: 2,
+    title: "Skills",
+    fields: [
+      {
+        name: "skills",
+        label: "Skills",
+        type: "multi-select",
+        required: true,
+        options: [
+          { label: "React", value: "react" },
+          { label: "Next.js", value: "nextjs" },
+          { label: "TypeScript", value: "ts" },
+        ],
+        selectProps: {
+          searchable: true,
+        },
+      },
+    ],
+  },
+];
+```
+
+### 4. Use StepperForm
+
+```tsx
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const form = useForm({
+  resolver: zodResolver(schema),
+  defaultValues: {
+    full_name: "",
+    email: "",
+    skills: [],
+  },
+});
+
+<StepperForm
+  form={form}
+  steps={steps}
+  title="Example Form"
+  description="Reusable stepper form"
+  onSubmit={(values) => {
+    console.log(values);
+  }}
+/>;
+```
+
+---
+
+## 🧩 Supported Field Types
+
+- `text`
+- `email`
+- `password`
+- `number`
+- `date`
+- `textarea`
+- `select`
+- `multi-select`
+- `checkbox`
+- `radio`
+- `file`
+- `tel`
+- `country`
+- `state`
+- `city`
+
+---
+
+## 🎨 Variants
+
+All fields support:
+
+```ts
+variant: "default" | "filled" | "ghost" | "error";
+size: "sm" | "md" | "lg";
+radius: "sm" | "md" | "lg";
+```
+
+---
+
+## 🧱 Architecture
+
+- **StepperForm** → handles steps and navigation
+- **FormRenderer** → renders fields dynamically
+- **Field components** → reusable independently
+- **Config** → drives everything
+
+---
+
+## 🔧 Customization
+
+You can:
+
+- Override fields using `renderField`
+- Inject custom UI
+- Extend field types
+- Modify variants
+- Use fields independently
+
+---
+
+## 📸 Demo
+
+Generate demo:
+
+```bash
+npx @aravindvjn/stepper-form init --demo
+```
+
+---
+
+## 🛠 Roadmap
+
+- [ ] Interactive CLI (like shadcn)
+- [ ] Add/remove components individually
+- [ ] Theme support
+- [ ] Validation presets
+- [ ] Form builder UI
+
+---
+
+## 🤝 Contributing
+
+PRs and ideas are welcome.
+
+---
+
+## 📄 License
+
+Aravind Vijayan
