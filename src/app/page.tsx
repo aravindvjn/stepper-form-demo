@@ -92,7 +92,7 @@ export default function Example() {
   );
 }`;
 
-const installCode = `npm install @aravindvjn/stepper-form react-hook-form zod @hookform/resolvers`;
+const installCode = `npx @aravindvjn/stepper-form init`;
 
 const page = () => {
   return (
